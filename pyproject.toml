@@ -1,12 +1,19 @@
 [project]
-name = "langgraph-tutorial"
+name = "contract-draft-poc"
 version = "0.1.0"
-description = "Add your description here"
+description = "Subcontractor Contract Draft Generation System"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
     "ipykernel>=6.29.5",
     "langchain[anthropic]>=0.3.24",
     "langgraph>=0.3.34",
     "python-dotenv>=1.1.0",
+    "pdfplumber>=0.11.0",
+    "openpyxl>=3.1.0",
+    "pandas>=2.2.0",
+    "python-docx>=1.1.0",
+    "jinja2>=3.1.0",
+    "pydantic>=2.0.0",
+    "pypdf>=4.0.0",
 ]
