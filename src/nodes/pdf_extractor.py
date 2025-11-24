@@ -158,10 +158,20 @@ def pdf_extractor_node(state: ContractState) -> Dict[str, Any]:
                     except:
                         extracted_data[date_field] = None
 
-            # Create structured objects
-            extracted_data["contractor"] = ContractParty(**extracted_data["contractor"])
-            extracted_data["subcontractor"] = ContractParty(**extracted_data["subcontractor"])
-            extracted_data["payment_terms"] = PaymentTerms(**extracted_data["payment_terms"])
+            # Create structured objects with None handling
+            contractor_data = extracted_data["contractor"]
+            contractor_data["name"] = contractor_data.get("name") or "[Contractor Name Not Found]"
+            contractor_data["address"] = contractor_data.get("address") or "[Contractor Address Not Found]"
+            extracted_data["contractor"] = ContractParty(**contractor_data)
+
+            subcontractor_data = extracted_data["subcontractor"]
+            subcontractor_data["name"] = subcontractor_data.get("name") or "[Subcontractor Name Not Found]"
+            subcontractor_data["address"] = subcontractor_data.get("address") or "[Subcontractor Address Not Found]"
+            extracted_data["subcontractor"] = ContractParty(**subcontractor_data)
+
+            payment_data = extracted_data["payment_terms"]
+            payment_data["payment_schedule"] = payment_data.get("payment_schedule") or "Payment terms to be defined"
+            extracted_data["payment_terms"] = PaymentTerms(**payment_data)
 
             updates["verhandlungsprotokoll_data"] = extracted_data
             updates["messages"].append({

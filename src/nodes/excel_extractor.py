@@ -27,8 +27,8 @@ def excel_extractor_node(state: ContractState) -> Dict[str, Any]:
         return updates
 
     try:
-        # Read Excel file (skip the title row and use the second row as header)
-        df = pd.read_excel(excel_path, sheet_name=0, header=1)
+        # Read Excel file (use the first row as header)
+        df = pd.read_excel(excel_path, sheet_name=0, header=0)
 
         # Store raw data
         updates["leistungsverzeichnis_raw"] = df.to_dict('records')
@@ -40,7 +40,7 @@ def excel_extractor_node(state: ContractState) -> Dict[str, Any]:
         # Expected column mappings (adjust based on actual Excel structure)
         column_mappings = {
             'position': ['Pos', 'Position', 'Pos.', 'Nr', 'Number'],
-            'description': ['Beschreibung', 'Description', 'Leistung', 'Text'],
+            'description': ['Beschreibung', 'Description', 'Leistung', 'Leistungsbeschreibung', 'Text'],
             'quantity': ['Menge', 'Quantity', 'Anzahl', 'Amount'],
             'unit': ['Einheit', 'Unit', 'ME'],
             'unit_price': ['Einzelpreis', 'EP', 'Unit Price', 'Preis/Einheit'],
