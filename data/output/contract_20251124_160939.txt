@@ -1,0 +1,226 @@
+NACHUNTERNEHMERVERTRAG
+(SUBCONTRACTOR AGREEMENT)
+
+================================================================================
+
+Zwischen / Between:
+
+AUFTRAGGEBER (CONTRACTOR):
+Generalbau GmbH
+[Auftraggeber Adresse nicht gefunden]
+Ansprechpartner / Contact: Max Müller, Projektleiter
+- nachfolgend "Auftraggeber" genannt -
+- hereinafter referred to as "Contractor" -
+
+und / and
+
+NACHUNTERNEHMER (SUBCONTRACTOR):
+Rohbau Sub GmbH
+[Nachunternehmer Adresse nicht gefunden]
+Ansprechpartner / Contact: Ali Kaya, Geschäftsführer
+- nachfolgend "Nachunternehmer" genannt -
+- hereinafter referred to as "Subcontractor" -
+
+================================================================================
+
+§ 1 VERTRAGSGEGENSTAND / SUBJECT OF CONTRACT
+--------------------------------------------------------------------------------
+
+1.1 Projekt / Project:
+    Name: Mehrfamilienhaus – Rohbau
+    Standort / Location: Wohnhaus Musterstraße 12, 80331 München
+Referenz / Reference: Mehrfamilienhaus – Rohbau
+1.2 Projektbeschreibung / Project Description:
+    Subunternehmervertrag für das Gewerk Rohbauarbeiten mit Leistungsumfang gemäß LV einschließlich: Baustelleneinrichtung, Erdarbeiten, Bodenplatte, tragende und nichttragende Mauerwerkswände, Stahlbetondecken, Aussparungen und Einbauteile
+
+1.3 Leistungsumfang / Scope of Work:
+    Rohbauarbeiten gemäß Leistungsverzeichnis einschließlich: Baustelleneinrichtung, Erdarbeiten, Bodenplatte, tragende und nichttragende Mauerwerkswände, Stahlbetondecken, Aussparungen und Einbauteile. Schnittstellen: Entsorgung von Aushub durch AN, Bewehrungslieferung durch AN, Einbindung Haustechnik-Öffnungen nach Plan
+
+================================================================================
+
+§ 2 LEISTUNGSVERZEICHNIS / BILL OF QUANTITIES
+--------------------------------------------------------------------------------
+
+Die folgenden Leistungen sind zu erbringen:
+The following services shall be provided:
+
+Pos. 01.01: Baustelleneinrichtung (Container, Lagerfläche, Absicherung)
+    Menge/Quantity: 1.0 pauschal
+    Einzelpreis/Unit Price: 2500.00 EUR
+    Gesamtpreis/Total Price: 2500.00 EUR
+
+Pos. 01.02: Aushub der Baugrube bis 2,5 m Tiefe inkl. Abtransport
+    Menge/Quantity: 250.0 m³
+    Einzelpreis/Unit Price: 14.00 EUR
+    Gesamtpreis/Total Price: 3500.00 EUR
+
+Pos. 01.03: Lieferung und Einbau von Sauberkeitsschicht aus Magerbeton
+    Menge/Quantity: 25.0 m³
+    Einzelpreis/Unit Price: 85.00 EUR
+    Gesamtpreis/Total Price: 2125.00 EUR
+
+Pos. 01.04: Lieferung und Einbau von Bewehrung gemäß Statik
+    Menge/Quantity: 3000.0 kg
+    Einzelpreis/Unit Price: 1.60 EUR
+    Gesamtpreis/Total Price: 4800.00 EUR
+
+Pos. 01.05: Herstellung der Fundamentplatte aus Beton C25/30 inkl. Schalung
+    Menge/Quantity: 40.0 m³
+    Einzelpreis/Unit Price: 160.00 EUR
+    Gesamtpreis/Total Price: 6400.00 EUR
+
+Pos. 01.06: Errichtung von tragenden Außenwänden aus Kalksandstein (24 cm)
+    Menge/Quantity: 220.0 m²
+    Einzelpreis/Unit Price: 85.00 EUR
+    Gesamtpreis/Total Price: 18700.00 EUR
+
+Pos. 01.07: Errichtung von Innenwänden aus Kalksandstein (11,5 cm)
+    Menge/Quantity: 140.0 m²
+    Einzelpreis/Unit Price: 65.00 EUR
+    Gesamtpreis/Total Price: 9100.00 EUR
+
+Pos. 01.08: Deckenbeton (Stahlbetondecke, 20 cm) inkl. Schalung
+    Menge/Quantity: 180.0 m²
+    Einzelpreis/Unit Price: 95.00 EUR
+    Gesamtpreis/Total Price: 17100.00 EUR
+
+Pos. 01.09: Aussparungen, Durchbrüche und Einbauteile laut Planung
+    Menge/Quantity: 1.0 pauschal
+    Einzelpreis/Unit Price: 1000.00 EUR
+    Gesamtpreis/Total Price: 1000.00 EUR
+
+Pos. 01.10: Baustellenräumung und Entsorgung nach Abschluss der Arbeiten
+    Menge/Quantity: 1.0 pauschal
+    Einzelpreis/Unit Price: 1200.00 EUR
+    Gesamtpreis/Total Price: 1200.00 EUR
+
+
+Zwischensumme / Subtotal: 66425.00 EUR
+MwSt. / VAT (19%): 12620.75 EUR
+================================================================================
+GESAMTSUMME / TOTAL AMOUNT: 79045.75 EUR
+================================================================================
+
+
+================================================================================
+
+§ 4 AUSFÜHRUNGSFRISTEN / EXECUTION DEADLINES
+--------------------------------------------------------------------------------
+
+Vertragsdatum / Contract Date: 24.11.2025
+Beginn der Arbeiten / Start of Work: 01.03.2026
+Ende der Arbeiten / End of Work: 31.05.2026
+
+================================================================================
+
+§ 5 ZAHLUNGSBEDINGUNGEN / PAYMENT TERMS
+--------------------------------------------------------------------------------
+
+5.1 Zahlungsplan / Payment Schedule:
+    Monatliche Abschlagszahlungen, Abrechnung nach Einheitspreisen gemäß LV
+
+
+
+5.4 Zahlungsfrist / Payment Deadline:
+    14 Tage nach Rechnungsstellung
+    14 days after invoice
+
+5.5 Schlusszahlung / Final Payment:
+    Skonto 2% bei Zahlung innerhalb 14 Tagen, Schlussrechnung prüffähig innerhalb von 14 Kalendertagen nach Abnahme vorzulegen
+
+================================================================================
+
+§ 6 GEWÄHRLEISTUNG / WARRANTY
+--------------------------------------------------------------------------------
+
+Gewährleistungsfrist / Warranty Period: 48 Monate / months
+
+Die Gewährleistung beginnt mit der Abnahme der Leistungen.
+The warranty period begins with the acceptance of services.
+
+================================================================================
+
+§ 7 VERSICHERUNG / INSURANCE
+--------------------------------------------------------------------------------
+
+Nachweis Betriebshaftpflichtversicherung inkl. Bauherren- und Umweltrisiken
+
+================================================================================
+
+§ 8 QUALITÄTSSTANDARDS / QUALITY STANDARDS
+--------------------------------------------------------------------------------
+
+Ausführung nach anerkannten Regeln der Technik und einschlägigen Normen, VOB/C – einschlägige ATV (DIN 18331, DIN 18300 u. a.), Prüf- und Eignungsnachweise: Beton, Bewehrungsstahl
+
+================================================================================
+
+§ 9 VERTRAGSSTRAFEN / PENALTIES
+--------------------------------------------------------------------------------
+
+Vertragsstrafe vereinbart: 0,2% der Auftragssumme je Werktag Verzug, gedeckelt bei 5%
+
+================================================================================
+
+§ 10 BESONDERE VEREINBARUNGEN / SPECIAL AGREEMENTS
+--------------------------------------------------------------------------------
+
+1. Vertragserfüllungsbürgschaft 5% der Auftragssumme
+2. Gewährleistungsbürgschaft 3% für 4 Jahre (Rohbauarbeiten)
+3. Wöchentliche Baubesprechung mittwochs 09:00 Uhr im Baucontainer / per MS Teams
+4. Einsatz von Nachunternehmern nur nach vorheriger schriftlicher Zustimmung des Auftraggebers
+
+================================================================================
+
+§ 11 ALLGEMEINE VERTRAGSBEDINGUNGEN / GENERAL TERMS AND CONDITIONS
+--------------------------------------------------------------------------------
+
+11.1 Es gelten die Bestimmungen der VOB/B in der jeweils gültigen Fassung.
+     The provisions of VOB/B in the current version shall apply.
+
+11.2 Gerichtsstand ist der Sitz des Auftraggebers.
+     Place of jurisdiction is the registered office of the Contractor.
+
+11.3 Es gilt deutsches Recht.
+     German law shall apply.
+
+================================================================================
+
+§ 12 ANLAGEN / ATTACHMENTS
+--------------------------------------------------------------------------------
+
+Folgende Dokumente sind Vertragsbestandteil:
+The following documents are part of this contract:
+
+- Verhandlungsprotokoll.pdf
+- Leistungsverzeichnis.xlsx
+
+================================================================================
+
+§ 13 SCHLUSSBESTIMMUNGEN / FINAL PROVISIONS
+--------------------------------------------------------------------------------
+
+13.1 Änderungen und Ergänzungen dieses Vertrages bedürfen der Schriftform.
+     Changes and amendments to this contract must be made in writing.
+
+13.2 Sollten einzelne Bestimmungen dieses Vertrages unwirksam sein, so bleibt
+     die Wirksamkeit der übrigen Bestimmungen unberührt.
+     Should individual provisions of this contract be invalid, the validity
+     of the remaining provisions shall remain unaffected.
+
+================================================================================
+
+UNTERSCHRIFTEN / SIGNATURES
+--------------------------------------------------------------------------------
+
+Generalbau GmbH                    Rohbau Sub GmbH
+
+_______________________________          _______________________________
+Ort, Datum / Place, Date                 Ort, Datum / Place, Date
+
+_______________________________          _______________________________
+Unterschrift / Signature                 Unterschrift / Signature
+(Auftraggeber / Contractor)              (Nachunternehmer / Subcontractor)
+
+================================================================================
+Erstellt am / Generated on: 24.11.2025
+Version: 1.0
