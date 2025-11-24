@@ -1,0 +1,226 @@
+NACHUNTERNEHMERVERTRAG
+(SUBCONTRACTOR AGREEMENT)
+
+================================================================================
+
+Zwischen / Between:
+
+AUFTRAGGEBER (CONTRACTOR):
+{{ contractor.name }}
+{{ contractor.address }}
+{% if contractor.registration_number %}Registernummer / Registration No.: {{ contractor.registration_number }}{% endif %}
+{% if contractor.tax_id %}Steuernummer / Tax ID: {{ contractor.tax_id }}{% endif %}
+{% if contractor.contact_person %}Ansprechpartner / Contact: {{ contractor.contact_person }}{% endif %}
+{% if contractor.email %}E-Mail: {{ contractor.email }}{% endif %}
+{% if contractor.phone %}Telefon / Phone: {{ contractor.phone }}{% endif %}
+
+- nachfolgend "Auftraggeber" genannt -
+- hereinafter referred to as "Contractor" -
+
+und / and
+
+NACHUNTERNEHMER (SUBCONTRACTOR):
+{{ subcontractor.name }}
+{{ subcontractor.address }}
+{% if subcontractor.registration_number %}Registernummer / Registration No.: {{ subcontractor.registration_number }}{% endif %}
+{% if subcontractor.tax_id %}Steuernummer / Tax ID: {{ subcontractor.tax_id }}{% endif %}
+{% if subcontractor.contact_person %}Ansprechpartner / Contact: {{ subcontractor.contact_person }}{% endif %}
+{% if subcontractor.email %}E-Mail: {{ subcontractor.email }}{% endif %}
+{% if subcontractor.phone %}Telefon / Phone: {{ subcontractor.phone }}{% endif %}
+
+- nachfolgend "Nachunternehmer" genannt -
+- hereinafter referred to as "Subcontractor" -
+
+================================================================================
+
+§ 1 VERTRAGSGEGENSTAND / SUBJECT OF CONTRACT
+--------------------------------------------------------------------------------
+
+1.1 Projekt / Project:
+    Name: {{ project_name }}
+    Standort / Location: {{ project_location }}
+    {% if project_reference %}Referenz / Reference: {{ project_reference }}{% endif %}
+
+1.2 Projektbeschreibung / Project Description:
+    {{ project_description }}
+
+1.3 Leistungsumfang / Scope of Work:
+    {{ scope_of_work }}
+
+================================================================================
+
+§ 2 LEISTUNGSVERZEICHNIS / BILL OF QUANTITIES
+--------------------------------------------------------------------------------
+
+Die folgenden Leistungen sind zu erbringen:
+The following services shall be provided:
+
+{% for item in performance_items %}
+Pos. {{ item.position_number }}: {{ item.description }}
+    Menge/Quantity: {{ item.quantity }} {{ item.unit }}
+    Einzelpreis/Unit Price: {{ "%.2f"|format(item.unit_price) }} {{ currency }}
+    Gesamtpreis/Total Price: {{ "%.2f"|format(item.total_price) }} {{ currency }}
+    {% if item.notes %}Anmerkungen/Notes: {{ item.notes }}{% endif %}
+
+{% endfor %}
+
+Zwischensumme / Subtotal: {{ "%.2f"|format(subtotal) }} {{ currency }}
+MwSt. / VAT ({{ "%.0f"|format(tax_rate * 100) }}%): {{ "%.2f"|format(tax_amount) }} {{ currency }}
+================================================================================
+GESAMTSUMME / TOTAL AMOUNT: {{ "%.2f"|format(total_contract_value) }} {{ currency }}
+================================================================================
+
+{% if excluded_services %}
+§ 3 AUSGESCHLOSSENE LEISTUNGEN / EXCLUDED SERVICES
+--------------------------------------------------------------------------------
+
+Die folgenden Leistungen sind vom Vertragsumfang ausgeschlossen:
+The following services are excluded from the contract scope:
+
+{% for service in excluded_services %}
+- {{ service }}
+{% endfor %}
+{% endif %}
+
+================================================================================
+
+§ 4 AUSFÜHRUNGSFRISTEN / EXECUTION DEADLINES
+--------------------------------------------------------------------------------
+
+Vertragsdatum / Contract Date: {{ contract_date.strftime('%d.%m.%Y') }}
+Beginn der Arbeiten / Start of Work: {{ start_date.strftime('%d.%m.%Y') }}
+Ende der Arbeiten / End of Work: {{ end_date.strftime('%d.%m.%Y') }}
+
+================================================================================
+
+§ 5 ZAHLUNGSBEDINGUNGEN / PAYMENT TERMS
+--------------------------------------------------------------------------------
+
+5.1 Zahlungsplan / Payment Schedule:
+    {{ payment_terms.payment_schedule }}
+
+{% if payment_terms.advance_payment %}
+5.2 Anzahlung / Advance Payment:
+    {{ payment_terms.advance_payment }}% der Auftragssumme / of contract value
+{% endif %}
+
+{% if payment_terms.retention %}
+5.3 Sicherheitseinbehalt / Retention:
+    {{ payment_terms.retention }}% der Auftragssumme / of contract value
+{% endif %}
+
+5.4 Zahlungsfrist / Payment Deadline:
+    {{ payment_terms.payment_deadline_days }} Tage nach Rechnungsstellung
+    {{ payment_terms.payment_deadline_days }} days after invoice
+
+{% if payment_terms.final_payment_conditions %}
+5.5 Schlusszahlung / Final Payment:
+    {{ payment_terms.final_payment_conditions }}
+{% endif %}
+
+================================================================================
+
+{% if warranty_period_months %}
+§ 6 GEWÄHRLEISTUNG / WARRANTY
+--------------------------------------------------------------------------------
+
+Gewährleistungsfrist / Warranty Period: {{ warranty_period_months }} Monate / months
+
+Die Gewährleistung beginnt mit der Abnahme der Leistungen.
+The warranty period begins with the acceptance of services.
+{% endif %}
+
+================================================================================
+
+{% if insurance_requirements %}
+§ 7 VERSICHERUNG / INSURANCE
+--------------------------------------------------------------------------------
+
+{{ insurance_requirements }}
+{% endif %}
+
+================================================================================
+
+{% if quality_standards %}
+§ 8 QUALITÄTSSTANDARDS / QUALITY STANDARDS
+--------------------------------------------------------------------------------
+
+{{ quality_standards }}
+{% endif %}
+
+================================================================================
+
+{% if penalties %}
+§ 9 VERTRAGSSTRAFEN / PENALTIES
+--------------------------------------------------------------------------------
+
+{{ penalties }}
+{% endif %}
+
+================================================================================
+
+{% if special_agreements %}
+§ 10 BESONDERE VEREINBARUNGEN / SPECIAL AGREEMENTS
+--------------------------------------------------------------------------------
+
+{% for agreement in special_agreements %}
+{{ loop.index }}. {{ agreement }}
+{% endfor %}
+{% endif %}
+
+================================================================================
+
+§ 11 ALLGEMEINE VERTRAGSBEDINGUNGEN / GENERAL TERMS AND CONDITIONS
+--------------------------------------------------------------------------------
+
+11.1 Es gelten die Bestimmungen der VOB/B in der jeweils gültigen Fassung.
+     The provisions of VOB/B in the current version shall apply.
+
+11.2 Gerichtsstand ist der Sitz des Auftraggebers.
+     Place of jurisdiction is the registered office of the Contractor.
+
+11.3 Es gilt deutsches Recht.
+     German law shall apply.
+
+================================================================================
+
+§ 12 ANLAGEN / ATTACHMENTS
+--------------------------------------------------------------------------------
+
+Folgende Dokumente sind Vertragsbestandteil:
+The following documents are part of this contract:
+
+{% for attachment in attachments %}
+- {{ attachment }}
+{% endfor %}
+
+================================================================================
+
+§ 13 SCHLUSSBESTIMMUNGEN / FINAL PROVISIONS
+--------------------------------------------------------------------------------
+
+13.1 Änderungen und Ergänzungen dieses Vertrages bedürfen der Schriftform.
+     Changes and amendments to this contract must be made in writing.
+
+13.2 Sollten einzelne Bestimmungen dieses Vertrages unwirksam sein, so bleibt
+     die Wirksamkeit der übrigen Bestimmungen unberührt.
+     Should individual provisions of this contract be invalid, the validity
+     of the remaining provisions shall remain unaffected.
+
+================================================================================
+
+UNTERSCHRIFTEN / SIGNATURES
+--------------------------------------------------------------------------------
+
+{{ contractor.name }}                    {{ subcontractor.name }}
+
+_______________________________          _______________________________
+Ort, Datum / Place, Date                 Ort, Datum / Place, Date
+
+_______________________________          _______________________________
+Unterschrift / Signature                 Unterschrift / Signature
+(Auftraggeber / Contractor)              (Nachunternehmer / Subcontractor)
+
+================================================================================
+Erstellt am / Generated on: {{ generated_date.strftime('%d.%m.%Y') }}
+Version: {{ version }}
