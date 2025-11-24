@@ -48,7 +48,7 @@ def document_classifier_node(state: ContractState) -> Dict[str, Any]:
     return updates
 
 
-def route_documents(state: ContractState) -> Literal["pdf_extractor", "excel_extractor", "both", "error"]:
+def route_documents(state: ContractState) -> Literal["document_extractor", "excel_extractor", "both", "error"]:
     """
     Routing function to determine which extractors to run.
     """
@@ -57,7 +57,7 @@ def route_documents(state: ContractState) -> Literal["pdf_extractor", "excel_ext
     if status == "both_documents":
         return "both"
     elif status == "pdf_only":
-        return "pdf_extractor"
+        return "document_extractor"
     elif status == "excel_only":
         return "excel_extractor"
     else:

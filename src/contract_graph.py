@@ -6,7 +6,7 @@ from src.models.state import ContractState
 from src.nodes import (
     upload_handler_node,
     document_classifier_node,
-    pdf_extractor_node,
+    document_extractor_node,
     excel_extractor_node,
     data_validator_node,
     data_merger_node,
@@ -30,7 +30,7 @@ def create_contract_graph():
     # Add all nodes
     graph.add_node("upload_handler", upload_handler_node)
     graph.add_node("document_classifier", document_classifier_node)
-    graph.add_node("pdf_extractor", pdf_extractor_node)
+    graph.add_node("document_extractor", document_extractor_node)
     graph.add_node("excel_extractor", excel_extractor_node)
     graph.add_node("data_validator", data_validator_node)
     graph.add_node("data_merger", data_merger_node)
@@ -47,8 +47,8 @@ def create_contract_graph():
 
     # Document Classifier -> Conditional routing to extractors
     # For simplicity, we'll run both extractors in sequence if both documents are available
-    graph.add_edge("document_classifier", "pdf_extractor")
-    graph.add_edge("pdf_extractor", "excel_extractor")
+    graph.add_edge("document_classifier", "document_extractor")
+    graph.add_edge("document_extractor", "excel_extractor")
 
     # Extractors -> Data Validator
     graph.add_edge("excel_extractor", "data_validator")
@@ -88,7 +88,7 @@ def create_contract_graph_with_routing():
     # Add all nodes
     graph.add_node("upload_handler", upload_handler_node)
     graph.add_node("document_classifier", document_classifier_node)
-    graph.add_node("pdf_extractor", pdf_extractor_node)
+    graph.add_node("document_extractor", document_extractor_node)
     graph.add_node("excel_extractor", excel_extractor_node)
     graph.add_node("data_validator", data_validator_node)
     graph.add_node("data_merger", data_merger_node)
@@ -105,9 +105,9 @@ def create_contract_graph_with_routing():
     def route_from_classifier(state):
         status = state.get("processing_status", "")
         if status == "both_documents":
-            return "pdf_extractor"
+            return "document_extractor"
         elif status == "pdf_only":
-            return "pdf_extractor"
+            return "document_extractor"
         elif status == "excel_only":
             return "excel_extractor"
         else:
@@ -117,14 +117,14 @@ def create_contract_graph_with_routing():
         "document_classifier",
         route_from_classifier,
         {
-            "pdf_extractor": "pdf_extractor",
+            "document_extractor": "document_extractor",
             "excel_extractor": "excel_extractor",
             "error_handler": "error_handler"
         }
     )
 
     # Handle extraction flow
-    def route_after_pdf(state):
+    def route_after_document(state):
         status = state.get("processing_status", "")
         if status == "both_documents":
             return "excel_extractor"
@@ -132,8 +132,8 @@ def create_contract_graph_with_routing():
             return "data_validator"
 
     graph.add_conditional_edges(
-        "pdf_extractor",
-        route_after_pdf,
+        "document_extractor",
+        route_after_document,
         {
             "excel_extractor": "excel_extractor",
             "data_validator": "data_validator"

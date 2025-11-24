@@ -81,9 +81,9 @@ def excel_extractor_node(state: ContractState) -> Dict[str, Any]:
 
                 item = PerformanceItem(
                     position_number=str(row.get(actual_columns.get('position', index + 1)) or index + 1),
-                    description=str(row.get(actual_columns.get('description', 'Item')) or 'Item'),
+                    description=str(row.get(actual_columns.get('description', 'Position')) or 'Position'),
                     quantity=quantity,
-                    unit=str(row.get(actual_columns.get('unit', 'pcs')) or 'pcs'),
+                    unit=str(row.get(actual_columns.get('unit', 'Stk')) or 'Stk'),
                     unit_price=unit_price,
                     total_price=total_price,
                     notes=None
