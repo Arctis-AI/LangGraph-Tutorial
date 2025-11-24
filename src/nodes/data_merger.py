@@ -21,15 +21,17 @@ def data_merger_node(state: ContractState) -> Dict[str, Any]:
     lv_data = state.get("leistungsverzeichnis_data", {})
 
     try:
-        # Prepare contractor and subcontractor
-        contractor = vp_data.get("contractor", ContractParty(
-            name="Main Contractor GmbH",
-            address="Address not specified"
-        ))
-        subcontractor = vp_data.get("subcontractor", ContractParty(
-            name="Subcontractor AG",
-            address="Address not specified"
-        ))
+        # Prepare contractor and subcontractor - use actual data only
+        contractor = vp_data.get("contractor")
+        subcontractor = vp_data.get("subcontractor")
+
+        if not contractor or not subcontractor:
+            updates["error"] = "Missing contractor or subcontractor data"
+            updates["messages"].append({
+                "role": "system",
+                "content": "❌ Cannot proceed without contractor/subcontractor information"
+            })
+            return updates
 
         # Ensure contractor and subcontractor are ContractParty objects
         if isinstance(contractor, dict):
@@ -37,11 +39,14 @@ def data_merger_node(state: ContractState) -> Dict[str, Any]:
         if isinstance(subcontractor, dict):
             subcontractor = ContractParty(**subcontractor)
 
-        # Prepare payment terms
-        payment_terms = vp_data.get("payment_terms", PaymentTerms(
-            payment_schedule="As per agreement",
-            payment_deadline_days=30
-        ))
+        # Prepare payment terms - use actual data
+        payment_terms = vp_data.get("payment_terms")
+        if not payment_terms:
+            # Create minimal payment terms if missing
+            payment_terms = PaymentTerms(
+                payment_schedule=vp_data.get("payment_schedule", "To be defined"),
+                payment_deadline_days=30
+            )
         if isinstance(payment_terms, dict):
             payment_terms = PaymentTerms(**payment_terms)
 
@@ -51,10 +56,10 @@ def data_merger_node(state: ContractState) -> Dict[str, Any]:
             "contractor": contractor,
             "subcontractor": subcontractor,
 
-            # Project details
-            "project_name": vp_data.get("project_name", "Construction Project"),
-            "project_location": vp_data.get("project_location", "Location TBD"),
-            "project_description": vp_data.get("project_description", "As per specifications"),
+            # Project details - use actual extracted data
+            "project_name": vp_data.get("project_name", "[Project Name Not Extracted]"),
+            "project_location": vp_data.get("project_location", "[Location Not Extracted]"),
+            "project_description": vp_data.get("project_description", "[Description Not Extracted]"),
             "project_reference": lv_data.get("project_reference"),
 
             # Dates
@@ -63,7 +68,7 @@ def data_merger_node(state: ContractState) -> Dict[str, Any]:
             "end_date": vp_data.get("contract_end_date", date(date.today().year + 1, date.today().month, date.today().day)),
 
             # Scope and specifications
-            "scope_of_work": vp_data.get("scope_of_work", "As per attached specifications"),
+            "scope_of_work": vp_data.get("scope_of_work", "[Scope Not Extracted]"),
             "performance_items": lv_data.get("performance_items", []),
             "excluded_services": vp_data.get("excluded_services", []),
 
@@ -114,37 +119,9 @@ def data_merger_node(state: ContractState) -> Dict[str, Any]:
             "role": "system",
             "content": f"❌ Data merging error: {str(e)}"
         })
-        # Create minimal merged data
-        updates["merged_data"] = create_minimal_contract_data()
+        # Don't use defaults - let the error propagate
+        updates["merged_data"] = None
 
     return updates
 
 
-def create_minimal_contract_data() -> Dict[str, Any]:
-    """Create minimal contract data structure when merging fails."""
-    return {
-        "contractor": ContractParty(name="Contractor", address="Address"),
-        "subcontractor": ContractParty(name="Subcontractor", address="Address"),
-        "project_name": "Project",
-        "project_location": "Location",
-        "project_description": "Description",
-        "contract_date": date.today(),
-        "start_date": date.today(),
-        "end_date": date(date.today().year + 1, date.today().month, date.today().day),
-        "scope_of_work": "As specified",
-        "performance_items": [],
-        "excluded_services": [],
-        "subtotal": 0.0,
-        "tax_rate": 0.19,
-        "tax_amount": 0.0,
-        "total_contract_value": 0.0,
-        "currency": "EUR",
-        "payment_terms": PaymentTerms(
-            payment_schedule="As agreed",
-            payment_deadline_days=30
-        ),
-        "special_agreements": [],
-        "attachments": [],
-        "generated_date": date.today(),
-        "version": "1.0"
-    }

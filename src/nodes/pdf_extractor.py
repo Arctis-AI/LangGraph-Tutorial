@@ -1,6 +1,7 @@
-"""PDF extractor node for processing Verhandlungsprotokoll."""
+"""Document extractor node for processing Verhandlungsprotokoll (supports docx, pdf, txt)."""
 
 import pdfplumber
+from docx import Document
 from typing import Dict, Any
 from datetime import date, datetime
 from langchain.chat_models import init_chat_model
@@ -20,24 +21,38 @@ def pdf_extractor_node(state: ContractState) -> Dict[str, Any]:
         "messages": []
     }
 
-    pdf_path = state.get("pdf_path")
-    if not pdf_path:
+    doc_path = state.get("pdf_path")  # Key kept as pdf_path for compatibility
+    if not doc_path:
         updates["messages"].append({
             "role": "system",
-            "content": "⚠️ No PDF file available, skipping PDF extraction"
+            "content": "⚠️ No document file available, skipping extraction"
         })
         return updates
 
     try:
-        # Extract text from PDF or text file
+        # Extract text from docx, PDF, or text file
         full_text = ""
-        if pdf_path.endswith('.txt'):
+        if doc_path.endswith('.txt'):
             # Read text file directly
-            with open(pdf_path, 'r', encoding='utf-8') as f:
+            with open(doc_path, 'r', encoding='utf-8') as f:
                 full_text = f.read()
+        elif doc_path.endswith('.docx'):
+            # Extract from Word document
+            doc = Document(doc_path)
+            paragraphs = []
+            for para in doc.paragraphs:
+                if para.text.strip():
+                    paragraphs.append(para.text)
+            # Also extract text from tables
+            for table in doc.tables:
+                for row in table.rows:
+                    row_text = [cell.text.strip() for cell in row.cells if cell.text.strip()]
+                    if row_text:
+                        paragraphs.append(" | ".join(row_text))
+            full_text = "\n".join(paragraphs)
         else:
             # Extract from PDF
-            with pdfplumber.open(pdf_path) as pdf:
+            with pdfplumber.open(doc_path) as pdf:
                 for page in pdf.pages:
                     page_text = page.extract_text()
                     if page_text:
@@ -46,7 +61,7 @@ def pdf_extractor_node(state: ContractState) -> Dict[str, Any]:
         updates["verhandlungsprotokoll_raw"] = full_text
         updates["messages"].append({
             "role": "system",
-            "content": f"✓ Extracted {len(full_text)} characters from PDF"
+            "content": f"✓ Extracted {len(full_text)} characters from document"
         })
 
         # Use LLM to structure the extracted data
@@ -57,6 +72,8 @@ def pdf_extractor_node(state: ContractState) -> Dict[str, Any]:
 
         Text to analyze:
         {full_text[:8000]}  # Limit to avoid token limits
+
+        IMPORTANT: Extract ACTUAL information from the text above. Do not use placeholder or example data.
 
         Extract the following information and return it as a valid JSON object:
         {{
@@ -106,27 +123,40 @@ def pdf_extractor_node(state: ContractState) -> Dict[str, Any]:
         """
 
         response = llm.invoke([
-            {"role": "system", "content": "You are a precise data extraction assistant."},
+            {"role": "system", "content": "You are a precise data extraction assistant. Always return valid, complete JSON."},
             {"role": "user", "content": extraction_prompt}
         ])
 
+        # Remove debug output for cleaner logs
+
         # Parse the LLM response as JSON
         try:
-            extracted_data = json.loads(response.content)
+            # Clean up the response to extract JSON
+            response_text = response.content
+
+            # Remove markdown code block if present
+            if "```json" in response_text:
+                response_text = response_text.split("```json")[1].split("```")[0]
+            elif "```" in response_text:
+                response_text = response_text.split("```")[1].split("```")[0]
+
+            # Try to find JSON in the response (in case LLM added extra text)
+            import re
+            json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+            if json_match:
+                response_text = json_match.group()
+
+            extracted_data = json.loads(response_text)
 
             # Convert date strings to date objects where needed
-            if extracted_data.get("negotiation_date"):
-                extracted_data["negotiation_date"] = datetime.strptime(
-                    extracted_data["negotiation_date"], "%Y-%m-%d"
-                ).date()
-            if extracted_data.get("contract_start_date"):
-                extracted_data["contract_start_date"] = datetime.strptime(
-                    extracted_data["contract_start_date"], "%Y-%m-%d"
-                ).date()
-            if extracted_data.get("contract_end_date"):
-                extracted_data["contract_end_date"] = datetime.strptime(
-                    extracted_data["contract_end_date"], "%Y-%m-%d"
-                ).date()
+            for date_field in ["negotiation_date", "contract_start_date", "contract_end_date"]:
+                if extracted_data.get(date_field) and extracted_data[date_field] != "null":
+                    try:
+                        extracted_data[date_field] = datetime.strptime(
+                            extracted_data[date_field], "%Y-%m-%d"
+                        ).date()
+                    except:
+                        extracted_data[date_field] = None
 
             # Create structured objects
             extracted_data["contractor"] = ContractParty(**extracted_data["contractor"])
@@ -136,15 +166,23 @@ def pdf_extractor_node(state: ContractState) -> Dict[str, Any]:
             updates["verhandlungsprotokoll_data"] = extracted_data
             updates["messages"].append({
                 "role": "system",
-                "content": "✓ Successfully structured Verhandlungsprotokoll data"
+                "content": f"✓ Successfully extracted data from Verhandlungsprotokoll:\n" +
+                         f"  Project: {extracted_data.get('project_name')}\n" +
+                         f"  Contractor: {extracted_data['contractor'].name}\n" +
+                         f"  Subcontractor: {extracted_data['subcontractor'].name}"
             })
 
-        except json.JSONDecodeError as e:
-            # If JSON parsing fails, create default data
-            updates["verhandlungsprotokoll_data"] = create_default_verhandlungsprotokoll_data()
+        except (json.JSONDecodeError, KeyError, TypeError) as e:
+            # Log the actual error for debugging
             updates["messages"].append({
                 "role": "system",
-                "content": f"⚠️ Could not parse LLM response, using defaults: {str(e)}"
+                "content": f"⚠️ Error parsing LLM response: {str(e)}\nResponse was: {response.content[:500]}"
+            })
+            # Try a simpler extraction as fallback
+            updates["verhandlungsprotokoll_data"] = extract_with_fallback(full_text)
+            updates["messages"].append({
+                "role": "system",
+                "content": "⚠️ Using simplified extraction method"
             })
 
     except Exception as e:
@@ -153,49 +191,90 @@ def pdf_extractor_node(state: ContractState) -> Dict[str, Any]:
             "role": "system",
             "content": f"❌ PDF extraction error: {str(e)}"
         })
-        # Create default data on error
-        updates["verhandlungsprotokoll_data"] = create_default_verhandlungsprotokoll_data()
+        # Don't use defaults - let it fail or extract what it can
+        updates["verhandlungsprotokoll_data"] = None
 
     return updates
 
 
-def create_default_verhandlungsprotokoll_data() -> Dict[str, Any]:
-    """Create default Verhandlungsprotokoll data structure."""
-    return {
-        "project_name": "Construction Project",
-        "project_location": "Berlin, Germany",
-        "project_description": "General construction work",
-        "contractor": ContractParty(
-            name="Main Contractor GmbH",
-            address="Sample Street 1, 10115 Berlin",
-            registration_number="HRB 12345",
-            contact_person="John Doe",
-            email="info@contractor.de",
-            phone="+49 30 123456"
-        ),
-        "subcontractor": ContractParty(
-            name="Subcontractor AG",
-            address="Work Street 2, 10117 Berlin",
-            registration_number="HRB 67890",
-            contact_person="Jane Smith",
-            email="info@subcontractor.de",
-            phone="+49 30 789012"
-        ),
-        "negotiation_date": date.today(),
-        "contract_start_date": date.today(),
-        "contract_end_date": date(date.today().year + 1, date.today().month, date.today().day),
-        "scope_of_work": "Complete construction work as per specifications",
-        "payment_terms": PaymentTerms(
-            payment_schedule="Monthly progress payments",
-            advance_payment=10.0,
-            retention=5.0,
-            payment_deadline_days=30,
-            final_payment_conditions="Upon final acceptance"
-        ),
-        "warranty_period_months": 24,
-        "insurance_requirements": "Liability insurance minimum 1M EUR",
-        "special_agreements": ["Work according to VOB/B", "Weekly progress reports required"],
-        "excluded_services": ["Electrical work", "Plumbing"],
-        "penalties": "0.1% of contract value per day of delay, max 5%",
-        "quality_standards": "DIN standards apply"
-    }
+def extract_with_fallback(text: str) -> Dict[str, Any]:
+    """Simpler extraction method using pattern matching and LLM for specific fields."""
+    import re
+    from langchain.chat_models import init_chat_model
+
+    try:
+        llm = init_chat_model("anthropic:claude-sonnet-4-20250514")
+
+        # Extract specific fields with targeted prompts
+        def extract_field(field_name: str, prompt: str) -> str:
+            response = llm.invoke([
+                {"role": "system", "content": "Extract only the requested information. Be concise."},
+                {"role": "user", "content": f"{prompt}\n\nText:\n{text[:2000]}"}
+            ])
+            return response.content.strip()
+
+        # Extract key information with targeted prompts
+        project_name = extract_field("project_name",
+            "What is the project name? Return ONLY the project name, nothing else.")
+
+        project_location = extract_field("project_location",
+            "What is the project location/address? Return ONLY the location.")
+
+        # Extract contractor info
+        contractor_info = extract_field("contractor",
+            "Who is the main contractor (Auftraggeber)? Return name and address only.")
+        contractor_parts = contractor_info.split('\n')
+        contractor_name = contractor_parts[0] if contractor_parts else ""
+        contractor_address = contractor_parts[1] if len(contractor_parts) > 1 else ""
+
+        # Extract subcontractor info
+        subcontractor_info = extract_field("subcontractor",
+            "Who is the subcontractor (Nachunternehmer)? Return name and address only.")
+        subcontractor_parts = subcontractor_info.split('\n')
+        subcontractor_name = subcontractor_parts[0] if subcontractor_parts else ""
+        subcontractor_address = subcontractor_parts[1] if len(subcontractor_parts) > 1 else ""
+
+        # Try to find dates with regex
+        date_pattern = r'(\d{1,2})\.(\d{1,2})\.(\d{4})'
+        dates = re.findall(date_pattern, text)
+
+        # Use first found date as start, calculate end as 6 months later
+        if dates:
+            day, month, year = dates[0]
+            start_date = date(int(year), int(month), int(day))
+        else:
+            start_date = date.today()
+
+        end_date = date(start_date.year + (1 if start_date.month > 6 else 0),
+                        (start_date.month + 6) % 12 or 12, start_date.day)
+
+        return {
+            "project_name": project_name,
+            "project_location": project_location,
+            "project_description": extract_field("description",
+                "Briefly describe the project scope. Maximum 2 sentences."),
+            "contractor": ContractParty(
+                name=contractor_name or "[Contractor Name Not Found]",
+                address=contractor_address or "[Contractor Address Not Found]"
+            ),
+            "subcontractor": ContractParty(
+                name=subcontractor_name or "[Subcontractor Name Not Found]",
+                address=subcontractor_address or "[Subcontractor Address Not Found]"
+            ),
+            "contract_start_date": start_date,
+            "contract_end_date": end_date,
+            "scope_of_work": extract_field("scope",
+                "What work will be performed? Summarize in 2-3 sentences."),
+            "payment_terms": PaymentTerms(
+                payment_schedule=extract_field("payment",
+                    "What are the payment terms? Return in one sentence.") or "Payment terms to be defined",
+                payment_deadline_days=30
+            ),
+            "special_agreements": [],
+            "excluded_services": []
+        }
+    except Exception as e:
+        # If extraction completely fails, return None
+        return None
+
+

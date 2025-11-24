@@ -13,13 +13,18 @@ def upload_handler_node(state: ContractState) -> Dict[str, Any]:
     print("📁 Processing uploaded files...")
 
     # Define paths to resource files
-    resources_dir = "resources"
-    # Check for PDF or text file
-    pdf_file = os.path.join(resources_dir, "verhandlungsprotokoll.pdf")
-    if not os.path.exists(pdf_file):
+    resources_dir = "resource"
+
+    # Check for document file (docx, pdf, or txt)
+    doc_file = os.path.join(resources_dir, "Verhandlungsprotokoll_Subunternehmer_Rohbau.docx")
+    if not os.path.exists(doc_file):
+        # Fall back to PDF
+        doc_file = os.path.join(resources_dir, "verhandlungsprotokoll.pdf")
+    if not os.path.exists(doc_file):
         # Fall back to text file
-        pdf_file = os.path.join(resources_dir, "verhandlungsprotokoll.txt")
-    excel_file = os.path.join(resources_dir, "leistungsverzeichnis.xlsx")
+        doc_file = os.path.join(resources_dir, "verhandlungsprotokoll.txt")
+
+    excel_file = os.path.join(resources_dir, "Leistungsverzeichnis_Rohbauarbeiten_v3 (1).xlsx")
 
     updates = {
         "current_step": "upload_handler",
@@ -28,18 +33,18 @@ def upload_handler_node(state: ContractState) -> Dict[str, Any]:
         "messages": [{"role": "system", "content": "Starting contract generation process..."}]
     }
 
-    # Check for PDF file
-    if os.path.exists(pdf_file):
-        updates["pdf_path"] = pdf_file
-        updates["uploaded_files"]["pdf"] = pdf_file
+    # Check for document file (docx, pdf, or txt)
+    if os.path.exists(doc_file):
+        updates["pdf_path"] = doc_file  # Keep key as pdf_path for compatibility
+        updates["uploaded_files"]["document"] = doc_file
         updates["messages"].append({
             "role": "system",
-            "content": f"✓ Found Verhandlungsprotokoll: {pdf_file}"
+            "content": f"✓ Found Verhandlungsprotokoll: {doc_file}"
         })
     else:
         updates["messages"].append({
             "role": "system",
-            "content": f"⚠️ Verhandlungsprotokoll not found at: {pdf_file}"
+            "content": f"⚠️ Verhandlungsprotokoll not found at: {doc_file}"
         })
 
     # Check for Excel file

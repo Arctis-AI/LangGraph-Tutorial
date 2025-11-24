@@ -40,7 +40,7 @@ def run_contract_generation():
     print_banner()
 
     print("📋 Starting contract generation process...")
-    print("📁 Looking for documents in 'resources' folder...")
+    print("📁 Looking for documents in 'resource' folder...")
     print()
 
     # Initialize the graph

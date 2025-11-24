@@ -129,71 +129,9 @@ def excel_extractor_node(state: ContractState) -> Dict[str, Any]:
             "role": "system",
             "content": f"❌ Excel extraction error: {str(e)}"
         })
-        # Create default data on error
-        updates["leistungsverzeichnis_data"] = create_default_leistungsverzeichnis_data()
+        # Don't use defaults - return None and let the system handle missing data
+        updates["leistungsverzeichnis_data"] = None
 
     return updates
 
 
-def create_default_leistungsverzeichnis_data() -> Dict[str, Any]:
-    """Create default Leistungsverzeichnis data structure."""
-    items = [
-        PerformanceItem(
-            position_number="1.1",
-            description="Site preparation and setup",
-            quantity=1,
-            unit="psch",
-            unit_price=5000.00,
-            total_price=5000.00
-        ),
-        PerformanceItem(
-            position_number="1.2",
-            description="Foundation work",
-            quantity=100,
-            unit="m³",
-            unit_price=150.00,
-            total_price=15000.00
-        ),
-        PerformanceItem(
-            position_number="2.1",
-            description="Concrete work",
-            quantity=200,
-            unit="m³",
-            unit_price=180.00,
-            total_price=36000.00
-        ),
-        PerformanceItem(
-            position_number="2.2",
-            description="Steel reinforcement",
-            quantity=15,
-            unit="t",
-            unit_price=1200.00,
-            total_price=18000.00
-        ),
-        PerformanceItem(
-            position_number="3.1",
-            description="Masonry work",
-            quantity=500,
-            unit="m²",
-            unit_price=85.00,
-            total_price=42500.00
-        )
-    ]
-
-    subtotal = sum(item.total_price for item in items)
-    tax_rate = 0.19
-    tax_amount = round(subtotal * tax_rate, 2)
-    total_amount = round(subtotal + tax_amount, 2)
-
-    return {
-        "document_title": "Leistungsverzeichnis - Default",
-        "project_reference": "Sample Project",
-        "creation_date": date.today(),
-        "performance_items": items,
-        "subtotal": subtotal,
-        "tax_rate": tax_rate,
-        "tax_amount": tax_amount,
-        "total_amount": total_amount,
-        "currency": "EUR",
-        "notes": "Default sample data"
-    }
