@@ -1,0 +1,182 @@
+VERHANDLUNGSPROTOKOLL
+Negotiation Protocol
+
+================================================================================
+
+Projekt: Neubau Bürogebäude Berlin Friedrichstraße
+Project: New Office Building Berlin Friedrichstraße
+
+Projektstandort: Friedrichstraße 123, 10117 Berlin
+Project Location: Friedrichstraße 123, 10117 Berlin
+
+Projektbeschreibung:
+Errichtung eines 6-geschossigen Bürogebäudes mit Tiefgarage. Das Gebäude umfasst ca. 8.000 m² Bürofläche und 50 Tiefgaragenstellplätze. Moderne Architektur mit nachhaltiger Bauweise nach EnEV-Standards.
+
+Project Description:
+Construction of a 6-story office building with underground parking. The building comprises approx. 8,000 m² of office space and 50 underground parking spaces. Modern architecture with sustainable construction according to EnEV standards.
+
+================================================================================
+
+VERTRAGSPARTEIEN / CONTRACT PARTIES
+
+Auftraggeber / Main Contractor:
+Bauunternehmen Schmidt GmbH
+Hauptstraße 45
+10115 Berlin
+Registernummer: HRB 123456B
+Steuernummer: DE123456789
+Ansprechpartner: Herr Johann Schmidt
+E-Mail: j.schmidt@schmidt-bau.de
+Telefon: +49 30 555-1234
+
+Nachunternehmer / Subcontractor:
+Beton & Stahl AG
+Industrieweg 78
+12345 Berlin
+Registernummer: HRB 789012B
+Steuernummer: DE987654321
+Ansprechpartner: Frau Maria Weber
+E-Mail: m.weber@beton-stahl.de
+Telefon: +49 30 555-5678
+
+================================================================================
+
+LEISTUNGSUMFANG / SCOPE OF WORK
+
+Der Nachunternehmer übernimmt folgende Leistungen:
+The subcontractor undertakes the following services:
+
+1. Betonarbeiten für Fundament und Bodenplatte
+   Concrete work for foundation and base plate
+
+2. Stahlbetonarbeiten für tragende Wände und Stützen
+   Reinforced concrete work for load-bearing walls and columns
+
+3. Deckenarbeiten inkl. Bewehrung für alle Geschosse
+   Ceiling work including reinforcement for all floors
+
+4. Treppenhauskerne in Sichtbetonqualität
+   Stairwell cores in exposed concrete quality
+
+5. Qualitätssicherung und Dokumentation nach DIN-Normen
+   Quality assurance and documentation according to DIN standards
+
+6. Koordination mit anderen Gewerken
+   Coordination with other trades
+
+================================================================================
+
+TERMINE / DEADLINES
+
+Verhandlungsdatum / Negotiation Date: 15.11.2024
+Vertragsbeginn / Contract Start: 01.01.2025
+Vertragsende / Contract End: 30.06.2025
+
+Meilensteine / Milestones:
+- Fundament fertiggestellt: 15.02.2025
+- Erdgeschoss fertiggestellt: 15.03.2025
+- Rohbau fertiggestellt: 31.05.2025
+- Endabnahme: 30.06.2025
+
+================================================================================
+
+ZAHLUNGSBEDINGUNGEN / PAYMENT TERMS
+
+Zahlungsplan / Payment Schedule:
+Monatliche Abschlagszahlungen nach nachgewiesenem Baufortschritt
+Monthly progress payments according to proven construction progress
+
+Anzahlung / Advance Payment: 10% der Auftragssumme bei Vertragsunterzeichnung
+10% of contract value upon contract signing
+
+Sicherheitseinbehalt / Retention: 5% der Auftragssumme
+5% of contract value
+
+Zahlungsfrist / Payment Deadline: 30 Tage nach Rechnungserhalt
+30 days after invoice receipt
+
+Schlusszahlung / Final Payment: Nach förmlicher Abnahme und Mängelbeseitigung
+After formal acceptance and defect remediation
+
+================================================================================
+
+GEWÄHRLEISTUNG / WARRANTY
+
+Gewährleistungsfrist: 5 Jahre nach VOB/B für Bauwerke
+Warranty Period: 5 years according to VOB/B for structures
+
+Die Gewährleistung beginnt mit der förmlichen Abnahme der Leistungen.
+The warranty begins with the formal acceptance of services.
+
+================================================================================
+
+VERSICHERUNG / INSURANCE
+
+Erforderliche Versicherungen / Required Insurance:
+- Betriebshaftpflichtversicherung: mindestens 5.000.000 EUR
+  General liability insurance: minimum 5,000,000 EUR
+- Bauwesenversicherung für die Dauer der Bauzeit
+  Construction insurance for the duration of construction
+
+================================================================================
+
+VERTRAGSSTRAFEN / PENALTIES
+
+Bei Verzug: 0,1% der Auftragssumme pro Kalendertag, maximal 5% der Gesamtsumme
+For delays: 0.1% of contract value per calendar day, maximum 5% of total sum
+
+Die Vertragsstrafe ist auf Schadensersatzansprüche anzurechnen.
+The penalty shall be credited against damage claims.
+
+================================================================================
+
+QUALITÄTSSTANDARDS / QUALITY STANDARDS
+
+Alle Arbeiten sind auszuführen nach:
+All work shall be executed according to:
+- DIN EN 206 (Beton)
+- DIN 1045 (Stahlbeton)
+- DIN 18202 (Toleranzen im Hochbau)
+- Sichtbetonklasse SB3 für ausgewiesene Bereiche
+  Exposed concrete class SB3 for designated areas
+
+================================================================================
+
+BESONDERE VEREINBARUNGEN / SPECIAL AGREEMENTS
+
+1. Wöchentliche Baufortschrittsberichte sind zu erstellen
+   Weekly construction progress reports must be prepared
+
+2. Teilnahme an wöchentlichen Baubesprechungen ist verpflichtend
+   Participation in weekly construction meetings is mandatory
+
+3. Alle Arbeiten sind gemäß VOB/B auszuführen
+   All work must be executed according to VOB/B
+
+4. Umweltschutzauflagen der Stadt Berlin sind einzuhalten
+   Environmental protection requirements of the City of Berlin must be observed
+
+5. Lärmschutzzeiten: Montag-Freitag 7:00-20:00, Samstag 8:00-16:00
+   Noise protection times: Monday-Friday 7:00-20:00, Saturday 8:00-16:00
+
+6. Baustelleneinrichtung wird vom Auftraggeber gestellt
+   Site facilities will be provided by the contractor
+
+================================================================================
+
+AUSGESCHLOSSENE LEISTUNGEN / EXCLUDED SERVICES
+
+Folgende Leistungen sind nicht im Leistungsumfang enthalten:
+The following services are not included in the scope:
+
+- Elektroinstallationen / Electrical installations
+- Sanitärinstallationen / Plumbing installations
+- Heizung, Lüftung, Klima / Heating, ventilation, air conditioning
+- Malerarbeiten / Painting work
+- Bodenbeläge / Floor coverings
+- Fassadenarbeiten / Facade work
+
+================================================================================
+
+Protokollführer / Minutes taken by: Johann Schmidt
+Datum / Date: 15.11.2024
