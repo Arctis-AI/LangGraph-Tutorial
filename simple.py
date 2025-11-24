@@ -35,7 +35,7 @@ graph_builder.add_edge("chatbot", END)
 graph = graph_builder.compile()
 
 user_input = input("Enter a message: ")
-#Pass in a state you want the graph to start with. match State type above
+#Pass in a state you want the graph to start with. match State type abovee
 state = graph.invoke({"messages": [{"role": "user", "content": user_input}]})
 
 print(state["messages"][-1].content)
