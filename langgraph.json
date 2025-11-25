@@ -1,0 +1,8 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "contract_generator": "./src/contract_graph.py:create_contract_graph_with_routing"
+  },
+  "env": ".env",
+  "python_version": "3.12"
+}

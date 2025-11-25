@@ -26,6 +26,13 @@ AZURE_OPENAI_ENDPOINT = os.getenv('AZURE_OPENAI_ENDPOINT')
 AZURE_OPENAI_API_VERSION = os.getenv('AZURE_OPENAI_API_VERSION', '2024-02-15-preview')
 AZURE_OPENAI_DEPLOYMENT_NAME = os.getenv('AZURE_OPENAI_DEPLOYMENT_NAME')
 
+# ==================== LangSmith Configuration ====================
+# Enable LangSmith tracing for monitoring and debugging
+LANGCHAIN_TRACING_V2 = os.getenv('LANGCHAIN_TRACING_V2', 'false').lower() == 'true'
+LANGCHAIN_API_KEY = os.getenv('LANGCHAIN_API_KEY')
+LANGCHAIN_PROJECT = os.getenv('LANGCHAIN_PROJECT', 'contract-draft-poc')
+LANGCHAIN_ENDPOINT = os.getenv('LANGCHAIN_ENDPOINT', 'https://api.smith.langchain.com')
+
 
 def validate_config():
     """
