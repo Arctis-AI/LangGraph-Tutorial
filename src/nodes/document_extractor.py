@@ -4,7 +4,7 @@ import pdfplumber
 from docx import Document
 from typing import Dict, Any
 from datetime import date, datetime
-from langchain.chat_models import init_chat_model
+from src.core.llm_clients import get_llm_client
 from src.models.state import ContractState
 from src.models.contract import VerhandlungsprotokollData, ContractParty, PaymentTerms
 import json
@@ -65,7 +65,7 @@ def document_extractor_node(state: ContractState) -> Dict[str, Any]:
         })
 
         # Use LLM to structure the extracted data
-        llm = init_chat_model("anthropic:claude-sonnet-4-20250514")
+        llm = get_llm_client()  # Uses default provider from config
 
         extraction_prompt = f"""
         You are a contract data extraction specialist. Extract structured information from this German negotiation protocol (Verhandlungsprotokoll).
@@ -210,10 +210,9 @@ def document_extractor_node(state: ContractState) -> Dict[str, Any]:
 def extract_with_fallback(text: str) -> Dict[str, Any]:
     """Simpler extraction method using pattern matching and LLM for specific fields."""
     import re
-    from langchain.chat_models import init_chat_model
 
     try:
-        llm = init_chat_model("anthropic:claude-sonnet-4-20250514")
+        llm = get_llm_client()  # Uses default provider from config
 
         # Extract specific fields with targeted prompts
         def extract_field(field_name: str, prompt: str) -> str:
