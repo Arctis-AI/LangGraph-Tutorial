@@ -14,7 +14,7 @@ from datetime import datetime
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-from src.contract_graph import create_contract_graph
+from src.contract_graph import create_contract_graph_with_routing
 
 # Load environment variables
 load_dotenv()
@@ -43,9 +43,9 @@ def run_contract_generation():
     print("📁 Looking for documents in 'resource' folder...")
     print()
 
-    # Initialize the graph
+    # Initialize the graph with conditional routing
     print_step("INIT", "Building workflow graph...")
-    graph = create_contract_graph()
+    graph = create_contract_graph_with_routing()
 
     # Initialize state
     initial_state = {

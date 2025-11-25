@@ -17,21 +17,34 @@ def data_merger_node(state: ContractState) -> Dict[str, Any]:
         "messages": []
     }
 
-    vp_data = state.get("verhandlungsprotokoll_data", {})
-    lv_data = state.get("leistungsverzeichnis_data", {})
+    vp_data = state.get("verhandlungsprotokoll_data", {}) or {}
+    lv_data = state.get("leistungsverzeichnis_data", {}) or {}
 
     try:
-        # Prepare contractor and subcontractor - use actual data only
+        # Prepare contractor and subcontractor - use actual data or create placeholders
         contractor = vp_data.get("contractor")
         subcontractor = vp_data.get("subcontractor")
 
-        if not contractor or not subcontractor:
-            updates["error"] = "Missing contractor or subcontractor data"
+        # If no VP data available (excel-only mode), create placeholder parties
+        if not contractor:
+            contractor = ContractParty(
+                name="[Auftraggeber - Bitte ergänzen]",
+                address="[Adresse - Bitte ergänzen]"
+            )
             updates["messages"].append({
                 "role": "system",
-                "content": "❌ Cannot proceed without contractor/subcontractor information"
+                "content": "⚠️ No Verhandlungsprotokoll data - using placeholder contractor information"
             })
-            return updates
+
+        if not subcontractor:
+            subcontractor = ContractParty(
+                name="[Nachunternehmer - Bitte ergänzen]",
+                address="[Adresse - Bitte ergänzen]"
+            )
+            updates["messages"].append({
+                "role": "system",
+                "content": "⚠️ No Verhandlungsprotokoll data - using placeholder subcontractor information"
+            })
 
         # Ensure contractor and subcontractor are ContractParty objects
         if isinstance(contractor, dict):
