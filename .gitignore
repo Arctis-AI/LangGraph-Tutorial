@@ -1,3 +1,11 @@
 .env
 .venv
 .idea
+data
+
+# LangGraph / LangSmith
+.langgraph_api
+.langsmith
+langsmith_cache/
+.langgraph/
+langgraph-storage/
