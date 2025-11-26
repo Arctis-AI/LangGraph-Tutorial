@@ -6,6 +6,17 @@ from langgraph.graph.message import add_messages
 from datetime import datetime
 
 
+def merge_steps(left: str, right: str) -> str:
+    """Reducer for current_step: joins multiple steps with ' + '."""
+    if not left:
+        return right
+    if not right:
+        return left
+    # Merge parallel steps
+    steps = set(left.split(" + ")) | set(right.split(" + "))
+    return " + ".join(sorted(steps))
+
+
 class ContractDraftingState(TypedDict):
     """State for the general contract drafting workflow."""
 
@@ -54,10 +65,10 @@ class ContractDraftingState(TypedDict):
     output_path: Optional[str]
 
     # ===== Status & Logging =====
-    current_step: str
+    current_step: Annotated[str, merge_steps]  # Supports parallel updates
     processing_status: str
     messages: Annotated[list, add_messages]
-    errors: List[str]
+    errors: Annotated[List[str], lambda x, y: x + y]  # Concatenate errors from parallel nodes
 
     # ===== Metadata =====
     created_at: Optional[datetime]

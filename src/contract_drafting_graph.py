@@ -28,14 +28,16 @@ def create_contract_drafting_graph():
 
     Flow:
     1. User Input Handler - Process user inputs and load contract type
-    2. Document Extractors (parallel) - Extract from PDF/DOCX and Excel
-    3. Knowledge Base Fetcher - Get historical contracts/clauses (can fail gracefully)
-    4. Structure Analyzer - Build contract outline
-    5. Content Mapper - Map extracted data to sections
-    6. Clause Generator - Generate contract sections
-    7. Consistency Checker - Validate consistency
-    8. Quality Reviewer - Assess quality
-    9. Output Formatter - Generate final files
+    2. PARALLEL EXECUTION (3 nodes run concurrently):
+       - Document Extractor - Extract from PDF/DOCX (Verhandlungsprotokoll)
+       - Excel Extractor - Extract from Excel (Leistungsverzeichnis)
+       - Knowledge Base Fetcher - Get historical contracts/clauses (can fail gracefully)
+    3. Structure Analyzer - Build contract outline (waits for all 3 parallel nodes)
+    4. Content Mapper - Map extracted data to sections
+    5. Clause Generator - Generate contract sections
+    6. Consistency Checker - Validate consistency
+    7. Quality Reviewer - Assess quality
+    8. Output Formatter - Generate final files
 
     Returns:
         Compiled LangGraph workflow
@@ -59,10 +61,18 @@ def create_contract_drafting_graph():
 
     # Define the flow
     graph.add_edge(START, "user_input_handler")
+
+    # Parallel execution: document_extractor, excel_extractor, knowledge_base_fetcher
     graph.add_edge("user_input_handler", "document_extractor")
-    graph.add_edge("document_extractor", "excel_extractor")
-    graph.add_edge("excel_extractor", "knowledge_base_fetcher")
+    graph.add_edge("user_input_handler", "excel_extractor")
+    graph.add_edge("user_input_handler", "knowledge_base_fetcher")
+
+    # All three parallel nodes feed into structure_analyzer
+    graph.add_edge("document_extractor", "structure_analyzer")
+    graph.add_edge("excel_extractor", "structure_analyzer")
     graph.add_edge("knowledge_base_fetcher", "structure_analyzer")
+
+    # Continue with sequential flow
     graph.add_edge("structure_analyzer", "content_mapper")
     graph.add_edge("content_mapper", "clause_generator")
     graph.add_edge("clause_generator", "consistency_checker")
