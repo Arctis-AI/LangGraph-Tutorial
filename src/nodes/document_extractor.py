@@ -7,6 +7,7 @@ from datetime import date, datetime
 from src.core.llm_clients import get_llm_client
 from src.models.state import ContractState
 from src.models.contract import VerhandlungsprotokollData, ContractParty, PaymentTerms
+from src.prompts import DOCUMENT_EXTRACTION_PROMPT, FIELD_EXTRACTION_PROMPT_TEMPLATE
 import json
 
 
@@ -67,60 +68,7 @@ def document_extractor_node(state: ContractState) -> Dict[str, Any]:
         # Use LLM to structure the extracted data
         llm = get_llm_client()  # Uses default provider from config
 
-        extraction_prompt = f"""
-        You are a contract data extraction specialist. Extract structured information from this German negotiation protocol (Verhandlungsprotokoll).
-
-        Text to analyze:
-        {full_text[:8000]}  # Limit to avoid token limits
-
-        IMPORTANT: Extract ACTUAL information from the text above. Do not use placeholder or example data.
-
-        Extract the following information and return it as a valid JSON object:
-        {{
-            "project_name": "Project name",
-            "project_location": "Project location/address",
-            "project_description": "Detailed project description",
-            "contractor": {{
-                "name": "Contractor company name",
-                "address": "Contractor address",
-                "registration_number": "Registration number if available",
-                "tax_id": "Tax ID if available",
-                "contact_person": "Contact person if mentioned",
-                "email": "Email if mentioned",
-                "phone": "Phone if mentioned"
-            }},
-            "subcontractor": {{
-                "name": "Subcontractor company name",
-                "address": "Subcontractor address",
-                "registration_number": "Registration number if available",
-                "tax_id": "Tax ID if available",
-                "contact_person": "Contact person if mentioned",
-                "email": "Email if mentioned",
-                "phone": "Phone if mentioned"
-            }},
-            "negotiation_date": "YYYY-MM-DD format or null",
-            "contract_start_date": "YYYY-MM-DD format",
-            "contract_end_date": "YYYY-MM-DD format",
-            "scope_of_work": "Detailed scope of work description",
-            "payment_terms": {{
-                "payment_schedule": "Payment schedule description",
-                "advance_payment": "Advance payment percentage or null",
-                "retention": "Retention percentage or null",
-                "payment_deadline_days": "Days for payment (default 30)",
-                "final_payment_conditions": "Conditions for final payment or null"
-            }},
-            "warranty_period_months": "Warranty period in months or null",
-            "insurance_requirements": "Required insurances or null",
-            "special_agreements": ["List of special agreements"],
-            "excluded_services": ["List of explicitly excluded services"],
-            "penalties": "Penalty clauses or null",
-            "quality_standards": "Required quality standards or null"
-        }}
-
-        If information is not found in the text, use reasonable defaults or null values.
-        Ensure all dates are in YYYY-MM-DD format.
-        Return ONLY the JSON object, no additional text.
-        """
+        extraction_prompt = DOCUMENT_EXTRACTION_PROMPT(full_text)
 
         response = llm.invoke([
             {"role": "system", "content": "You are a precise data extraction assistant. Always return valid, complete JSON."},
@@ -216,9 +164,10 @@ def extract_with_fallback(text: str) -> Dict[str, Any]:
 
         # Extract specific fields with targeted prompts
         def extract_field(field_name: str, prompt: str) -> str:
+            field_prompt = FIELD_EXTRACTION_PROMPT_TEMPLATE(field_name, prompt, text)
             response = llm.invoke([
                 {"role": "system", "content": "Extract only the requested information. Be concise."},
-                {"role": "user", "content": f"{prompt}\n\nText:\n{text[:2000]}"}
+                {"role": "user", "content": field_prompt}
             ])
             return response.content.strip()
 
