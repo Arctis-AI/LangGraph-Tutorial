@@ -1,9 +1,12 @@
 """
 Contract Generation System - Main Entry Point
 
-This system generates subcontractor contracts from:
-1. Verhandlungsprotokoll (negotiation protocol) - PDF/Text
-2. Leistungsverzeichnis (bill of quantities) - Excel
+This system generates construction contracts from:
+1. Contract type selection (94 types available)
+2. Project description
+3. Supporting documents (optional):
+   - Verhandlungsprotokoll (negotiation protocol) - PDF/DOCX/TXT
+   - Leistungsverzeichnis (bill of quantities) - Excel
 """
 
 from dotenv import load_dotenv
@@ -14,7 +17,7 @@ from datetime import datetime
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-from src.contract_graph import create_contract_graph_with_routing
+from src.contract_drafting_graph import create_contract_drafting_graph
 
 # Load environment variables
 load_dotenv()
@@ -23,8 +26,8 @@ load_dotenv()
 def print_banner():
     """Print welcome banner."""
     print("\n" + "=" * 80)
-    print("  NACHUNTERNEHMERVERTRAG GENERATOR")
-    print("  Subcontractor Contract Generation System")
+    print("  CONSTRUCTION CONTRACT DRAFTING SYSTEM")
+    print("  AI-Powered General Contract Generation")
     print("=" * 80)
     print()
 
@@ -35,28 +38,105 @@ def print_step(step: str, message: str):
     print(f"[{timestamp}] {step}: {message}")
 
 
-def run_contract_generation():
+def run_contract_generation(contract_type_id=None, project_description=None, pdf_path=None, excel_path=None):
     """Run the contract generation workflow."""
     print_banner()
 
     print("📋 Starting contract generation process...")
-    print("📁 Looking for documents in 'resource' folder...")
     print()
 
-    # Initialize the graph with conditional routing
+    # Initialize the graph
     print_step("INIT", "Building workflow graph...")
-    graph = create_contract_graph_with_routing()
+    graph = create_contract_drafting_graph()
+
+    # Use default contract type if not provided (Site Supervision)
+    if not contract_type_id:
+        contract_type_id = "00827bca-eccf-4e5a-87bb-dcd438c4ff29"  # Site Supervision
+        print_step("DEFAULT", "Using default contract type: Site Supervision Subcontract")
+
+    # Use default description if not provided
+    if not project_description:
+        project_description = """
+        Bauüberwachung für ein Bauprojekt.
+        Die Überwachung umfasst Qualitätskontrolle, Sicherheitsmanagement und Fortschrittsberichterstattung.
+        """
+        print_step("DEFAULT", "Using default project description")
+
+    # Check for documents in resource folder if not provided
+    uploaded_documents = []
+
+    # Look for PDF/DOCX (Verhandlungsprotokoll)
+    if pdf_path:
+        if os.path.exists(pdf_path):
+            uploaded_documents.append({"type": "verhandlungsprotokoll", "path": pdf_path})
+            print_step("FOUND", f"Verhandlungsprotokoll: {pdf_path}")
+    else:
+        # Search for VP documents in resource folder
+        import glob
+        vp_patterns = [
+            "resource/*Verhandlungsprotokoll*.pdf",
+            "resource/*Verhandlungsprotokoll*.docx",
+            "resource/*verhandlungsprotokoll*.pdf",
+            "resource/*verhandlungsprotokoll*.docx",
+            "resource/*.pdf",
+            "resource/*.docx"
+        ]
+        for pattern in vp_patterns:
+            files = glob.glob(pattern)
+            if files:
+                doc_path = files[0]  # Take first match
+                uploaded_documents.append({"type": "verhandlungsprotokoll", "path": doc_path})
+                print_step("FOUND", f"Verhandlungsprotokoll: {doc_path}")
+                break
+
+    # Look for Excel (Leistungsverzeichnis)
+    if excel_path:
+        if os.path.exists(excel_path):
+            uploaded_documents.append({"type": "leistungsverzeichnis", "path": excel_path})
+            print_step("FOUND", f"Leistungsverzeichnis: {excel_path}")
+    else:
+        # Search for LV documents in resource folder
+        lv_patterns = [
+            "resource/*Leistungsverzeichnis*.xlsx",
+            "resource/*Leistungsverzeichnis*.xls",
+            "resource/*leistungsverzeichnis*.xlsx",
+            "resource/*leistungsverzeichnis*.xls",
+            "resource/*.xlsx",
+            "resource/*.xls"
+        ]
+        for pattern in lv_patterns:
+            files = glob.glob(pattern)
+            if files:
+                doc_path = files[0]  # Take first match
+                uploaded_documents.append({"type": "leistungsverzeichnis", "path": doc_path})
+                print_step("FOUND", f"Leistungsverzeichnis: {doc_path}")
+                break
+
+    if not uploaded_documents:
+        print_step("INFO", "No documents found - will generate from contract type template")
 
     # Initialize state
     initial_state = {
+        "contract_type_id": contract_type_id,
+        "project_description": project_description,
+        "uploaded_documents": uploaded_documents,
         "messages": [],
-        "uploaded_files": {},
-        "validation_errors": [],
-        "validation_passed": False,
+        "errors": [],
+        "retrieved_contracts": [],
+        "retrieved_clauses": [],
+        "contract_structures": [],
+        "consistency_issues": [],
+        "output_files": {},
+        "generated_sections": {},
+        "section_mappings": {},
+        "contract_outline": [],
+        "quality_report": {},
+        "quality_score": 0.0,
         "quality_passed": False,
-        "retry_count": 0,
-        "processing_status": "starting",
-        "current_step": "init"
+        "current_step": "",
+        "processing_status": "initialized",
+        "created_at": datetime.now(),
+        "updated_at": datetime.now()
     }
 
     # Run the workflow
@@ -64,11 +144,14 @@ def run_contract_generation():
     print("-" * 80)
 
     try:
-        # Execute the graph
-        final_state = graph.invoke(
-            initial_state,
-            {"configurable": {"thread_id": "contract_gen_001"}}
-        )
+        # Execute the graph with metadata for LangSmith
+        config = {
+            "configurable": {"thread_id": "contract_gen_001"},
+            "run_name": "Contract Drafting - General",
+            "tags": ["contract_drafting", "general", f"type_{contract_type_id[:8]}"]
+        }
+
+        final_state = graph.invoke(initial_state, config)
 
         # Print results
         print("\n" + "=" * 80)
@@ -81,24 +164,34 @@ def run_contract_generation():
             for msg in final_state["messages"]:
                 if isinstance(msg, dict) and msg.get("content"):
                     print(f"  {msg['content']}")
+                else:
+                    print(f"  {msg}")
 
-        # Display validation results
-        if final_state.get("validation_errors"):
-            print(f"\n⚠️ Validation Issues: {len(final_state['validation_errors'])}")
-            for error in final_state["validation_errors"][:5]:
-                print(f"  - {error}")
+        # Display consistency issues
+        consistency_issues = final_state.get("consistency_issues", [])
+        if consistency_issues:
+            print(f"\n⚠️ Consistency Issues: {len(consistency_issues)}")
+            for issue in consistency_issues[:5]:
+                severity = issue.get("severity", "unknown")
+                message = issue.get("message", str(issue))
+                print(f"  [{severity.upper()}] {message}")
 
         # Display quality report
-        if final_state.get("quality_report"):
-            report = final_state["quality_report"]
+        quality_report = final_state.get("quality_report", {})
+        if quality_report:
             print(f"\n📈 Quality Report:")
-            print(f"  Score: {report.get('score', 0):.1f}%")
-            print(f"  Checks Passed: {report.get('passed', 0)}/{report.get('total', 0)}")
+            print(f"  Score: {quality_report.get('score', 0):.1f}/100")
+            print(f"  Level: {quality_report.get('level', 'N/A')}")
+            print(f"  Sections: {quality_report.get('sections_generated', 0)}/{quality_report.get('sections_required', 0)}")
+            print(f"  Contract Length: {quality_report.get('contract_length', 0)} chars")
 
         # Display output information
-        if final_state.get("output_path"):
+        output_files = final_state.get("output_files", {})
+        if output_files:
             print(f"\n✅ Contract generated successfully!")
-            print(f"📁 Output file: {final_state['output_path']}")
+            print(f"📁 Output files:")
+            for file_type, path in output_files.items():
+                print(f"  - {file_type.upper()}: {path}")
         else:
             print("\n❌ Contract generation did not complete successfully.")
 
@@ -126,11 +219,21 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Generate subcontractor contracts from documents"
+        description="Generate construction contracts from project description and documents"
+    )
+    parser.add_argument(
+        "--contract-type",
+        help="Contract type ID (default: Site Supervision)",
+        default=None
+    )
+    parser.add_argument(
+        "--description",
+        help="Project description",
+        default=None
     )
     parser.add_argument(
         "--pdf",
-        help="Path to Verhandlungsprotokoll (PDF/TXT)",
+        help="Path to Verhandlungsprotokoll (PDF/DOCX/TXT)",
         default=None
     )
     parser.add_argument(
@@ -146,12 +249,13 @@ def main():
 
     args = parser.parse_args()
 
-    # If custom paths provided, update the resource files
-    if args.pdf or args.excel:
-        print("⚠️ Custom file paths not yet implemented. Using default resources folder.")
-
     # Run the generation
-    run_contract_generation()
+    run_contract_generation(
+        contract_type_id=args.contract_type,
+        project_description=args.description,
+        pdf_path=args.pdf,
+        excel_path=args.excel
+    )
 
 
 if __name__ == "__main__":
