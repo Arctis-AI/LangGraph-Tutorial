@@ -14,6 +14,7 @@ import json
 def document_extractor_node(state: ContractState) -> Dict[str, Any]:
     """
     Extract data from Verhandlungsprotokoll document (DOCX, PDF, or TXT) using LLM.
+    Automatically searches for documents in resource/ folder.
     """
     print("📄 Extracting data from Verhandlungsprotokoll...")
 
@@ -22,11 +23,36 @@ def document_extractor_node(state: ContractState) -> Dict[str, Any]:
         "messages": []
     }
 
-    doc_path = state.get("pdf_path")  # Key kept as pdf_path for compatibility
+    # Try to get path from state first (backward compatibility)
+    doc_path = state.get("pdf_path")
+
+    # If not in state, search resource folder
+    if not doc_path:
+        import glob
+        import os
+
+        # Search patterns for Verhandlungsprotokoll
+        patterns = [
+            "resource/*Verhandlungsprotokoll*.pdf",
+            "resource/*Verhandlungsprotokoll*.docx",
+            "resource/*verhandlungsprotokoll*.pdf",
+            "resource/*verhandlungsprotokoll*.docx",
+            "resource/*.pdf",
+            "resource/*.docx",
+            "resource/*.txt"
+        ]
+
+        for pattern in patterns:
+            files = glob.glob(pattern)
+            if files:
+                doc_path = files[0]  # Take first match
+                print(f"  Found document: {os.path.basename(doc_path)}")
+                break
+
     if not doc_path:
         updates["messages"].append({
             "role": "system",
-            "content": "⚠️ No document file available, skipping extraction"
+            "content": "⚠️ No document file available in resource/ folder, skipping extraction"
         })
         return updates
 

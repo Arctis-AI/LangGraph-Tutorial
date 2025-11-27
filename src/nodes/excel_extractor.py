@@ -10,6 +10,7 @@ from src.models.contract import LeistungsverzeichnisData, PerformanceItem
 def excel_extractor_node(state: ContractState) -> Dict[str, Any]:
     """
     Extract data from Leistungsverzeichnis Excel file.
+    Automatically searches for Excel files in resource/ folder.
     """
     print("📊 Extracting data from Leistungsverzeichnis...")
 
@@ -18,11 +19,35 @@ def excel_extractor_node(state: ContractState) -> Dict[str, Any]:
         "messages": []
     }
 
+    # Try to get path from state first (backward compatibility)
     excel_path = state.get("excel_path")
+
+    # If not in state, search resource folder
+    if not excel_path:
+        import glob
+        import os
+
+        # Search patterns for Leistungsverzeichnis
+        patterns = [
+            "resource/*Leistungsverzeichnis*.xlsx",
+            "resource/*Leistungsverzeichnis*.xls",
+            "resource/*leistungsverzeichnis*.xlsx",
+            "resource/*leistungsverzeichnis*.xls",
+            "resource/*.xlsx",
+            "resource/*.xls"
+        ]
+
+        for pattern in patterns:
+            files = glob.glob(pattern)
+            if files:
+                excel_path = files[0]  # Take first match
+                print(f"  Found Excel: {os.path.basename(excel_path)}")
+                break
+
     if not excel_path:
         updates["messages"].append({
             "role": "system",
-            "content": "⚠️ No Excel file available, skipping Excel extraction"
+            "content": "⚠️ No Excel file available in resource/ folder, skipping Excel extraction"
         })
         return updates
 
